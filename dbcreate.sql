@@ -1,0 +1,93 @@
+CREATE TABLE IF NOT EXISTS "Users" (
+	"id" INTEGER NOT NULL,
+	"nickname" VARCHAR NOT NULL,
+	"email" VARCHAR NOT NULL,
+	PRIMARY KEY("id")
+);
+
+CREATE TABLE IF NOT EXISTS "subscriptions" (
+	"id" INTEGER NOT NULL,
+	"user_id" INTEGER NOT NULL,
+	"plan_type" VARCHAR NOT NULL,
+	"monthly_limit" INTEGER NOT NULL,
+	PRIMARY KEY("id"),
+	FOREIGN KEY ("user_id") REFERENCES "Users"("id")
+	ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE IF NOT EXISTS "billing" (
+	"id" INTEGER NOT NULL,
+	"user_id" INTEGER NOT NULL,
+	"amount" INTEGER NOT NULL,
+	"transaction_type" VARCHAR NOT NULL,
+	"created_at" TIMESTAMP NOT NULL,
+	PRIMARY KEY("id"),
+	FOREIGN KEY ("user_id") REFERENCES "Users"("id")
+	ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE IF NOT EXISTS "api_keys" (
+	"id" INTEGER NOT NULL,
+	"user_id" INTEGER NOT NULL,
+	"key_value" VARCHAR NOT NULL,
+	PRIMARY KEY("id"),
+	FOREIGN KEY ("user_id") REFERENCES "Users"("id")
+	ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE IF NOT EXISTS "categories" (
+	"id" INTEGER NOT NULL,
+	"name" VARCHAR NOT NULL,
+	PRIMARY KEY("id"),
+	FOREIGN KEY ("id") REFERENCES "models"("category_id")
+	ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE IF NOT EXISTS "models" (
+	"id" INTEGER NOT NULL,
+	"category_id" INTEGER NOT NULL,
+	"name" VARCHAR NOT NULL,
+	"param_count" VARCHAR NOT NULL,
+	PRIMARY KEY("id"),
+	FOREIGN KEY ("id") REFERENCES "fine_tuning_jobs"("model_id")
+	ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE IF NOT EXISTS "chats" (
+	"id" INTEGER NOT NULL,
+	"user_id" INTEGER NOT NULL,
+	"model_id" INTEGER NOT NULL,
+	"title" VARCHAR NOT NULL,
+	PRIMARY KEY("id"),
+	FOREIGN KEY ("user_id") REFERENCES "Users"("id")
+	ON UPDATE NO ACTION ON DELETE NO ACTION,
+	FOREIGN KEY ("model_id") REFERENCES "models"("id")
+	ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE IF NOT EXISTS "prompts" (
+	"id" INTEGER NOT NULL,
+	"user_id" INTEGER NOT NULL,
+	"title" VARCHAR NOT NULL,
+	"body" TEXT NOT NULL,
+	PRIMARY KEY("id"),
+	FOREIGN KEY ("user_id") REFERENCES "Users"("id")
+	ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE IF NOT EXISTS "datasets" (
+	"id" INTEGER NOT NULL,
+	"name" VARCHAR NOT NULL,
+	"file_size" INTEGER NOT NULL,
+	PRIMARY KEY("id"),
+	FOREIGN KEY ("id") REFERENCES "fine_tuning_jobs"("dataset_id")
+	ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE IF NOT EXISTS "fine_tuning_jobs" (
+	"id" INTEGER NOT NULL,
+	"model_id" INTEGER NOT NULL,
+	"dataset_id" INTEGER NOT NULL,
+	"status" VARCHAR NOT NULL,
+	PRIMARY KEY("id")
+);
