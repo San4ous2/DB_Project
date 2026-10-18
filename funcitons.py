@@ -12,7 +12,7 @@ def connect():
     return database
 
 
-def add_user(nickname, email):
+def add_Users(nickname, email):
     with closing(connect()) as database:
         with database:
             cursor = database.execute(
@@ -22,7 +22,7 @@ def add_user(nickname, email):
             return cursor.lastrowid
 
 
-def add_subscription(user_id, plan_type, monthly_limit):
+def add_subscriptions(user_id, plan_type, monthly_limit):
     with closing(connect()) as database:
         with database:
             cursor = database.execute(
@@ -45,7 +45,7 @@ def add_billing(user_id, amount, transaction_type, created_at):
             return cursor.lastrowid
 
 
-def add_api_key(user_id, key_value):
+def add_api_keys(user_id, key_value):
     with closing(connect()) as database:
         with database:
             cursor = database.execute(
@@ -55,7 +55,7 @@ def add_api_key(user_id, key_value):
             return cursor.lastrowid
 
 
-def add_category(name):
+def add_categories(name):
     with closing(connect()) as database:
         with database:
             cursor = database.execute(
@@ -65,7 +65,7 @@ def add_category(name):
             return cursor.lastrowid
 
 
-def add_model(category_id, name, param_count):
+def add_models(category_id, name, param_count):
     with closing(connect()) as database:
         with database:
             cursor = database.execute(
@@ -76,7 +76,7 @@ def add_model(category_id, name, param_count):
             return cursor.lastrowid
 
 
-def add_chat(user_id, model_id, title):
+def add_chats(user_id, model_id, title):
     with closing(connect()) as database:
         with database:
             cursor = database.execute(
@@ -86,7 +86,7 @@ def add_chat(user_id, model_id, title):
             return cursor.lastrowid
 
 
-def add_prompt(user_id, title, body):
+def add_prompts(user_id, title, body):
     with closing(connect()) as database:
         with database:
             cursor = database.execute(
@@ -96,7 +96,7 @@ def add_prompt(user_id, title, body):
             return cursor.lastrowid
 
 
-def add_dataset(name, file_size):
+def add_datasets(name, file_size):
     with closing(connect()) as database:
         with database:
             cursor = database.execute(
@@ -106,7 +106,7 @@ def add_dataset(name, file_size):
             return cursor.lastrowid
 
 
-def add_fine_tuning_job(model_id, dataset_id, status):
+def add_fine_tuning_jobs(model_id, dataset_id, status):
     with closing(connect()) as database:
         with database:
             cursor = database.execute(
@@ -117,7 +117,7 @@ def add_fine_tuning_job(model_id, dataset_id, status):
             return cursor.lastrowid
 
 
-def get_users():
+def get_Users():
     with closing(connect()) as database:
         return database.execute(
             'SELECT id, nickname, email FROM "Users" ORDER BY id'
@@ -187,4 +187,32 @@ def get_fine_tuning_jobs():
         return database.execute(
             "SELECT id, model_id, dataset_id, status "
             "FROM fine_tuning_jobs ORDER BY id"
+        ).fetchall()
+
+
+def delete_record(table, record_id):
+    with closing(connect()) as database:
+        with database:
+            cursor = database.execute(
+                f"DELETE FROM {table} WHERE id = ?", (record_id,)
+            )
+            return cursor.rowcount
+
+
+def update_record(table, columns, values, record_id):
+    assignments = ", ".join(f"{column} = ?" for column in columns)
+    with closing(connect()) as database:
+        with database:
+            cursor = database.execute(
+                f"UPDATE {table} SET {assignments} WHERE id = ?",
+                (*values, record_id),
+            )
+            return cursor.rowcount
+
+
+def search_records(table, column, pattern):
+    with closing(connect()) as database:
+        return database.execute(
+            "SELECT * FROM " + table + " WHERE " + column + " LIKE ? ORDER BY id",
+            (pattern,),
         ).fetchall()
