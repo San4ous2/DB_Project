@@ -28,7 +28,7 @@ def show_rows(rows, columns):
         tree.insert("", "end", iid=str(row[0]), values=row)
  
  
-def load_table():
+def load_table(Event = None):
     table = table_var.get()
     columns = TABLES[table]
     search_field_box["values"] = columns
