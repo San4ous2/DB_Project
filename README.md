@@ -10,3 +10,6 @@ Prototipu funkcijas: datu apskate, meklēšana, ierakstu pievienošana, labošan
 
 Ierakstu, ko lieto citi ieraksti (piemēram, lietotāju ar abonementu), dzēst nevar - vispirms jādzēš saistītie ieraksti
 Lai palaistu projektu ir jāpalaist app.py 
+
+
+Nav komentaru

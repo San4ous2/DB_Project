@@ -127,23 +127,33 @@ def get_Users():
 def get_subscriptions():
     with closing(connect()) as database:
         return database.execute(
-            "SELECT id, user_id, plan_type, monthly_limit "
-            "FROM subscriptions ORDER BY id"
+            "SELECT subscriptions.id, users.nickname AS user_nickname, "
+            "subscriptions.plan_type, subscriptions.monthly_limit "
+            "FROM subscriptions "
+            "JOIN users ON subscriptions.user_id = users.id "
+            "ORDER BY subscriptions.id"
         ).fetchall()
 
 
 def get_billing():
     with closing(connect()) as database:
         return database.execute(
-            "SELECT id, user_id, amount, transaction_type, created_at "
-            "FROM billing ORDER BY id"
+            "SELECT billing.id, users.nickname AS user_nickname, "
+            "billing.amount, billing.transaction_type, billing.created_at "
+            "FROM billing "
+            "JOIN users ON billing.user_id = users.id "
+            "ORDER BY billing.id"
         ).fetchall()
 
 
 def get_api_keys():
     with closing(connect()) as database:
         return database.execute(
-            "SELECT id, user_id, key_value FROM api_keys ORDER BY id"
+            "SELECT api_keys.id, users.nickname AS user_nickname, "
+            "api_keys.key_value "
+            "FROM api_keys "
+            "JOIN users ON api_keys.user_id = users.id "
+            "ORDER BY api_keys.id"
         ).fetchall()
 
 
@@ -164,14 +174,22 @@ def get_models():
 def get_chats():
     with closing(connect()) as database:
         return database.execute(
-            "SELECT id, user_id, model_id, title FROM chats ORDER BY id"
+            "SELECT chats.id, users.nickname AS user_nickname, "
+            "chats.model_id, chats.title "
+            "FROM chats "
+            "JOIN users ON chats.user_id = users.id "
+            "ORDER BY chats.id"
         ).fetchall()
 
 
 def get_prompts():
     with closing(connect()) as database:
         return database.execute(
-            "SELECT id, user_id, title, body FROM prompts ORDER BY id"
+            "SELECT prompts.id, users.nickname AS user_nickname, "
+            "prompts.title, prompts.body "
+            "FROM prompts "
+            "JOIN users ON prompts.user_id = users.id "
+            "ORDER BY prompts.id"
         ).fetchall()
 
 
