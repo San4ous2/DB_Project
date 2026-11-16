@@ -59,7 +59,7 @@ def ask_for_values(title, table, current_values=None):
     values = []
     for i, column in enumerate(TABLES[table]):
         start = current_values[i] if current_values else ""
-        answer = simpledialog.askstring(title, column, initialvalue=start, parent=root)
+        answer = simpledialog.askstring(title, column, initialvalue=start, parent=rot)
         if answer is None:
             return None
         answer = answer.strip()
