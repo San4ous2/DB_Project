@@ -2,8 +2,6 @@
 
 Vienkārša darbvirsmas lietotne AI pakalpojumu platformas datu pārvaldībai. Projekts izmanto Python, Tkinter un SQLite, un tajā ir 10 savstarpēji saistītas datubāzes tabulas.
 
-<img width="1097" height="830" alt="Ekrānuzņēmums 2026-10-16 110615" src="https://github.com/user-attachments/assets/afe033f8-e8b5-4687-be16-3d8532a4d40f" />
-
 ![Python](https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white)
 ![SQLite](https://img.shields.io/badge/Database-SQLite-003B57?logo=sqlite&logoColor=white)
 ![Interface](https://img.shields.io/badge/Interface-Tkinter-2E8B57)
@@ -47,75 +45,7 @@ Datubāze `AI_Provider_Platform.db` tiek glabāta projekta mapē. `dbcreate.sql`
 
 ## Datubāzes struktūra
 
-```mermaid
-erDiagram
-	USERS ||--o{ SUBSCRIPTIONS : has
-	USERS ||--o{ BILLING : has
-	USERS ||--o{ API_KEYS : owns
-	USERS ||--o{ CHATS : creates
-	USERS ||--o{ PROMPTS : saves
-	CATEGORIES ||--o{ MODELS : groups
-	MODELS ||--o{ CHATS : powers
-	MODELS ||--o{ FINE_TUNING_JOBS : trains
-	DATASETS ||--o{ FINE_TUNING_JOBS : supplies
-
-	USERS {
-		int id PK
-		string nickname
-		string email
-	}
-	SUBSCRIPTIONS {
-		int id PK
-		int user_id FK
-		string plan_type
-		int monthly_limit
-	}
-	BILLING {
-		int id PK
-		int user_id FK
-		int amount
-		string transaction_type
-		timestamp created_at
-	}
-	API_KEYS {
-		int id PK
-		int user_id FK
-		string key_value
-	}
-	CATEGORIES {
-		int id PK
-		string name
-	}
-	MODELS {
-		int id PK
-		int category_id FK
-		string name
-		string param_count
-	}
-	CHATS {
-		int id PK
-		int user_id FK
-		int model_id FK
-		string title
-	}
-	PROMPTS {
-		int id PK
-		int user_id FK
-		string title
-		string body
-	}
-	DATASETS {
-		int id PK
-		string name
-		int file_size
-	}
-	FINE_TUNING_JOBS {
-		int id PK
-		int model_id FK
-		int dataset_id FK
-		string status
-	}
-```
+<img width="1097" height="830" alt="Ekrānuzņēmums 2026-10-16 110615" src="https://github.com/user-attachments/assets/afe033f8-e8b5-4687-be16-3d8532a4d40f" />
 
 ## Piemēra datu grafiki
 
