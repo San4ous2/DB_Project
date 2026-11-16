@@ -2,6 +2,8 @@
 
 Vienkārša darbvirsmas lietotne AI pakalpojumu platformas datu pārvaldībai. Projekts izmanto Python, Tkinter un SQLite, un tajā ir 10 savstarpēji saistītas datubāzes tabulas.
 
+<img width="1097" height="830" alt="Ekrānuzņēmums 2026-10-16 110615" src="https://github.com/user-attachments/assets/afe033f8-e8b5-4687-be16-3d8532a4d40f" />
+
 ![Python](https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white)
 ![SQLite](https://img.shields.io/badge/Database-SQLite-003B57?logo=sqlite&logoColor=white)
 ![Interface](https://img.shields.io/badge/Interface-Tkinter-2E8B57)
