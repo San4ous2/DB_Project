@@ -5,6 +5,42 @@ from pathlib import Path
 
 DATABASE_PATH = Path(__file__).with_name("AI_Provider_Platform.db")
 
+QUERIES = {
+    "Users": 'SELECT t.id, t.nickname, t.email FROM "Users" t',
+    "subscriptions": (
+        "SELECT t.id, u.nickname AS user, t.plan_type, t.monthly_limit "
+        "FROM subscriptions t JOIN users u ON t.user_id = u.id"
+    ),
+    "billing": (
+        "SELECT t.id, u.nickname AS user, t.amount, t.transaction_type, t.created_at "
+        "FROM billing t JOIN users u ON t.user_id = u.id"
+    ),
+    "api_keys": (
+        "SELECT t.id, u.nickname AS user, t.key_value "
+        "FROM api_keys t JOIN users u ON t.user_id = u.id"
+    ),
+    "categories": "SELECT t.id, t.name FROM categories t",
+    "models": (
+        "SELECT t.id, c.name AS category, t.name AS name, t.param_count "
+        "FROM models t JOIN categories c ON t.category_id = c.id"
+    ),
+    "chats": (
+        "SELECT t.id, u.nickname AS user, m.name AS model, t.title "
+        "FROM chats t JOIN users u ON t.user_id = u.id "
+        "JOIN models m ON t.model_id = m.id"
+    ),
+    "prompts": (
+        "SELECT t.id, u.nickname AS user, t.title, t.body "
+        "FROM prompts t JOIN users u ON t.user_id = u.id"
+    ),
+    "datasets": "SELECT t.id, t.name, t.file_size FROM datasets t",
+    "fine_tuning_jobs": (
+        "SELECT t.id, m.name AS model, d.name AS dataset, t.status "
+        "FROM fine_tuning_jobs t JOIN models m ON t.model_id = m.id "
+        "JOIN datasets d ON t.dataset_id = d.id"
+    ),
+}
+
 
 def connect():
     database = sqlite3.connect(DATABASE_PATH)
@@ -117,95 +153,22 @@ def add_fine_tuning_jobs(model_id, dataset_id, status):
             return cursor.lastrowid
 
 
-def get_Users():
+def get_table(table):
+    with closing(connect()) as database:
+        cursor = database.execute(QUERIES[table] + " ORDER BY t.id")
+        return [name[0] for name in cursor.description], cursor.fetchall()
+
+
+def count_rows(table):
+    with closing(connect()) as database:
+        return database.execute(f'SELECT COUNT(*) FROM "{table}"').fetchone()[0]
+
+
+def get_record(table, record_id):
     with closing(connect()) as database:
         return database.execute(
-            'SELECT id, nickname, email FROM "Users" ORDER BY id'
-        ).fetchall()
-
-
-def get_subscriptions():
-    with closing(connect()) as database:
-        return database.execute(
-            "SELECT subscriptions.id, users.nickname AS user_nickname, "
-            "subscriptions.plan_type, subscriptions.monthly_limit "
-            "FROM subscriptions "
-            "JOIN users ON subscriptions.user_id = users.id "
-            "ORDER BY subscriptions.id"
-        ).fetchall()
-
-
-def get_billing():
-    with closing(connect()) as database:
-        return database.execute(
-            "SELECT billing.id, users.nickname AS user_nickname, "
-            "billing.amount, billing.transaction_type, billing.created_at "
-            "FROM billing "
-            "JOIN users ON billing.user_id = users.id "
-            "ORDER BY billing.id"
-        ).fetchall()
-
-
-def get_api_keys():
-    with closing(connect()) as database:
-        return database.execute(
-            "SELECT api_keys.id, users.nickname AS user_nickname, "
-            "api_keys.key_value "
-            "FROM api_keys "
-            "JOIN users ON api_keys.user_id = users.id "
-            "ORDER BY api_keys.id"
-        ).fetchall()
-
-
-def get_categories():
-    with closing(connect()) as database:
-        return database.execute(
-            "SELECT id, name FROM categories ORDER BY id"
-        ).fetchall()
-
-
-def get_models():
-    with closing(connect()) as database:
-        return database.execute(
-            "SELECT id, category_id, name, param_count FROM models ORDER BY id"
-        ).fetchall()
-
-
-def get_chats():
-    with closing(connect()) as database:
-        return database.execute(
-            "SELECT chats.id, users.nickname AS user_nickname, "
-            "chats.model_id, chats.title "
-            "FROM chats "
-            "JOIN users ON chats.user_id = users.id "
-            "ORDER BY chats.id"
-        ).fetchall()
-
-
-def get_prompts():
-    with closing(connect()) as database:
-        return database.execute(
-            "SELECT prompts.id, users.nickname AS user_nickname, "
-            "prompts.title, prompts.body "
-            "FROM prompts "
-            "JOIN users ON prompts.user_id = users.id "
-            "ORDER BY prompts.id"
-        ).fetchall()
-
-
-def get_datasets():
-    with closing(connect()) as database:
-        return database.execute(
-            "SELECT id, name, file_size FROM datasets ORDER BY id"
-        ).fetchall()
-
-
-def get_fine_tuning_jobs():
-    with closing(connect()) as database:
-        return database.execute(
-            "SELECT id, model_id, dataset_id, status "
-            "FROM fine_tuning_jobs ORDER BY id"
-        ).fetchall()
+            f"SELECT * FROM {table} WHERE id = ?", (record_id,)
+        ).fetchone()
 
 
 def delete_record(table, record_id):
@@ -230,7 +193,9 @@ def update_record(table, columns, values, record_id):
 
 def search_records(table, column, pattern):
     with closing(connect()) as database:
-        return database.execute(
-            "SELECT * FROM " + table + " WHERE " + column + " LIKE ? ORDER BY id",
+        cursor = database.execute(
+            "SELECT * FROM (" + QUERIES[table] + ") "
+            "WHERE " + column + " LIKE ? ORDER BY id",
             (pattern,),
-        ).fetchall()
+        )
+        return [name[0] for name in cursor.description], cursor.fetchall()
