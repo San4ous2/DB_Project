@@ -17,28 +17,6 @@ TABLES = {
     "fine_tuning_jobs": ["model_id", "dataset_id", "status"],
 }
 
-COLORS = {
-    "bg": "#0a101f",
-    "panel": "#0d1526",
-    "card": "#111827",
-    "border": "#1e293b",
-    "text": "#f1f5f9",
-    "muted": "#94a3b8",
-    "accent": "#22c55e",
-    "accent_hover": "#16a34a",
-    "accent_light": "#4ade80",
-    "accent_text": "#04120a",
-    "nav_active": "#132a1e",
-    "input": "#0f172a",
-    "heading": "#172033",
-    "row_alt": "#0e1626",
-    "danger": "#f87171",
-    "danger_bg": "#3b1717",
-    "danger_hover": "#4c1d1d",
-    "button": "#1e293b",
-    "button_hover": "#273449",
-}
-
 WIDTHS = {
     "id": 70,
     "user": 160,
@@ -57,18 +35,16 @@ WIDTHS = {
     "amount": 110,
 }
 
-LOGO = [
-    "6,6 44,6 44,28 26,28 26,60 52,86 6,86 6,62 24,62 24,44 6,26",
-    "64,6 94,36 94,86 64,56",
-]
-
-
 def make_logo(parent, size, color, background):
     canvas = tk.Canvas(
         parent, width=size, height=size, bg=background, highlightthickness=0
     )
     scale = size / 100
-    for points in LOGO:
+    logo_shapes = [
+        "6,6 44,6 44,28 26,28 26,60 52,86 6,86 6,62 24,62 24,44 6,26",
+        "64,6 94,36 94,86 64,56",
+    ]
+    for points in logo_shapes:
         coords = []
         for point in points.split():
             x, y = point.split(",")
@@ -89,16 +65,16 @@ def paint_gradient(canvas, width, height):
 
 def stat_card(parent, label, variable, padx=(0, 12)):
     card = tk.Frame(
-        parent, bg=COLORS["card"], highlightbackground=COLORS["border"],
+        parent, bg="#111827", highlightbackground="#1e293b",
         highlightthickness=1,
     )
     card.pack(side="left", fill="x", expand=True, padx=padx)
     tk.Label(
-        card, text=label.upper(), bg=COLORS["card"], fg=COLORS["muted"],
+        card, text=label.upper(), bg="#111827", fg="#94a3b8",
         font=("Consolas", 8),
     ).pack(anchor="w", padx=14, pady=(10, 0))
     tk.Label(
-        card, textvariable=variable, bg=COLORS["card"], fg=COLORS["text"],
+        card, textvariable=variable, bg="#111827", fg="#f1f5f9",
         font=("Segoe UI", 17, "bold"),
     ).pack(anchor="w", padx=14, pady=(0, 10))
 
@@ -110,9 +86,8 @@ def show_rows(rows, columns):
         label = "ID" if column == "id" else column.replace("_", " ").title()
         tree.heading(column, text=label, anchor="w")
         tree.column(column, width=WIDTHS.get(column, 140), anchor="w")
-    for index, row in enumerate(rows):
-        tag = "even" if index % 2 == 0 else "odd"
-        tree.insert("", "end", iid=str(row[0]), values=row, tags=(tag,))
+    for _, row in enumerate(rows):
+        tree.insert("", "end", iid=str(row[0]), values=row)
 
 
 def current_table():
@@ -221,150 +196,150 @@ def on_double_click(event):
 
 root = tk.Tk()
 root.title("AI Provider Platform")
-root.configure(bg=COLORS["bg"])
+root.configure(bg="#0a101f")
 root.geometry("1220x740")
 root.minsize(980, 600)
 
 style = ttk.Style(root)
 style.theme_use("clam")
-style.configure("TFrame", background=COLORS["bg"])
+style.configure("TFrame", background="#0a101f")
 style.configure(
-    "TLabel", background=COLORS["bg"], foreground=COLORS["text"],
+    "TLabel", background="#0a101f", foreground="#f1f5f9",
     font=("Segoe UI", 10),
 )
 style.configure(
-    "Muted.TLabel", background=COLORS["bg"], foreground=COLORS["muted"],
+    "Muted.TLabel", background="#0a101f", foreground="#94a3b8",
     font=("Segoe UI", 9),
 )
 style.configure(
-    "Treeview", background=COLORS["card"], fieldbackground=COLORS["card"],
-    foreground=COLORS["text"], rowheight=30, borderwidth=0,
-    bordercolor=COLORS["card"], lightcolor=COLORS["card"],
-    darkcolor=COLORS["card"], font=("Segoe UI", 10),
+    "Treeview", background="#111827", fieldbackground="#111827",
+    foreground="#f1f5f9", rowheight=30, borderwidth=0,
+    bordercolor="#111827", lightcolor="#111827",
+    darkcolor="#111827", font=("Segoe UI", 10),
 )
 style.configure(
-    "Treeview.Heading", background=COLORS["heading"], foreground=COLORS["muted"],
+    "Treeview.Heading", background="#172033", foreground="#94a3b8",
     font=("Segoe UI", 9, "bold"), relief="flat", borderwidth=0, padding=(10, 8),
 )
-style.map("Treeview.Heading", background=[("active", COLORS["heading"])])
+style.map("Treeview.Heading", background=[("active", "#172033")])
 style.map(
     "Treeview",
-    background=[("selected", COLORS["accent"])],
-    foreground=[("selected", COLORS["accent_text"])],
+    background=[("selected", "#22c55e")],
+    foreground=[("selected", "#04120a")],
 )
 style.configure(
-    "Nav.Treeview", background=COLORS["panel"], fieldbackground=COLORS["panel"],
-    foreground=COLORS["muted"], borderwidth=0, rowheight=34,
-    bordercolor=COLORS["panel"], lightcolor=COLORS["panel"],
-    darkcolor=COLORS["panel"], font=("Segoe UI", 10),
+    "Nav.Treeview", background="#0d1526", fieldbackground="#0d1526",
+    foreground="#94a3b8", borderwidth=0, rowheight=34,
+    bordercolor="#0d1526", lightcolor="#0d1526",
+    darkcolor="#0d1526", font=("Segoe UI", 10),
 )
 style.configure(
-    "Nav.Treeview.Heading", background=COLORS["panel"],
-    foreground=COLORS["muted"], font=("Consolas", 8), relief="flat",
+    "Nav.Treeview.Heading", background="#0d1526",
+    foreground="#94a3b8", font=("Consolas", 8), relief="flat",
     borderwidth=0, padding=(8, 8),
 )
 style.map(
     "Nav.Treeview",
-    background=[("selected", COLORS["nav_active"])],
-    foreground=[("selected", COLORS["accent_light"])],
+    background=[("selected", "#132a1e")],
+    foreground=[("selected", "#4ade80")],
 )
 style.configure(
     "TButton", font=("Segoe UI", 10), padding=(16, 8), borderwidth=0,
-    background=COLORS["button"], foreground=COLORS["text"],
+    background="#1e293b", foreground="#f1f5f9",
 )
 style.map(
     "TButton",
-    background=[("active", COLORS["button_hover"])],
-    foreground=[("active", COLORS["text"])],
+    background=[("active", "#273449")],
+    foreground=[("active", "#f1f5f9")],
 )
 style.configure(
-    "Accent.TButton", background=COLORS["accent"], foreground=COLORS["accent_text"],
+    "Accent.TButton", background="#22c55e", foreground="#04120a",
 )
 style.map(
     "Accent.TButton",
-    background=[("active", COLORS["accent_hover"])],
-    foreground=[("active", COLORS["accent_text"])],
+    background=[("active", "#16a34a")],
+    foreground=[("active", "#04120a")],
 )
 style.configure(
-    "Danger.TButton", background=COLORS["danger_bg"], foreground=COLORS["danger"],
+    "Danger.TButton", background="#3b1717", foreground="#f87171",
 )
 style.map(
     "Danger.TButton",
-    background=[("active", COLORS["danger_hover"])],
-    foreground=[("active", COLORS["danger"])],
+    background=[("active", "#4c1d1d")],
+    foreground=[("active", "#f87171")],
 )
 style.configure(
-    "TCombobox", fieldbackground=COLORS["input"], background=COLORS["input"],
-    foreground=COLORS["text"], arrowcolor=COLORS["muted"],
-    bordercolor=COLORS["border"], lightcolor=COLORS["border"],
-    darkcolor=COLORS["border"], padding=6,
+    "TCombobox", fieldbackground="#0f172a", background="#0f172a",
+    foreground="#f1f5f9", arrowcolor="#94a3b8",
+    bordercolor="#1e293b", lightcolor="#1e293b",
+    darkcolor="#1e293b", padding=6,
 )
 style.map(
     "TCombobox",
-    fieldbackground=[("readonly", COLORS["input"])],
-    foreground=[("readonly", COLORS["text"])],
-    selectbackground=[("readonly", COLORS["input"])],
-    selectforeground=[("readonly", COLORS["text"])],
+    fieldbackground=[("readonly", "#0f172a")],
+    foreground=[("readonly", "#f1f5f9")],
+    selectbackground=[("readonly", "#0f172a")],
+    selectforeground=[("readonly", "#f1f5f9")],
 )
 style.configure(
-    "TEntry", fieldbackground=COLORS["input"], foreground=COLORS["text"],
-    insertcolor=COLORS["text"], bordercolor=COLORS["border"],
-    lightcolor=COLORS["border"], darkcolor=COLORS["border"], padding=6,
+    "TEntry", fieldbackground="#0f172a", foreground="#f1f5f9",
+    insertcolor="#f1f5f9", bordercolor="#1e293b",
+    lightcolor="#1e293b", darkcolor="#1e293b", padding=6,
 )
 style.configure(
-    "Vertical.TScrollbar", background=COLORS["border"],
-    troughcolor=COLORS["card"], bordercolor=COLORS["card"],
-    lightcolor=COLORS["border"], darkcolor=COLORS["border"],
-    arrowcolor=COLORS["muted"], relief="flat",
+    "Vertical.TScrollbar", background="#1e293b",
+    troughcolor="#111827", bordercolor="#111827",
+    lightcolor="#1e293b", darkcolor="#1e293b",
+    arrowcolor="#94a3b8", relief="flat",
 )
 
-root.option_add("*TCombobox*Listbox.background", COLORS["input"])
-root.option_add("*TCombobox*Listbox.foreground", COLORS["text"])
-root.option_add("*TCombobox*Listbox.selectBackground", COLORS["accent"])
-root.option_add("*TCombobox*Listbox.selectForeground", COLORS["accent_text"])
+root.option_add("*TCombobox*Listbox.background", "#0f172a")
+root.option_add("*TCombobox*Listbox.foreground", "#f1f5f9")
+root.option_add("*TCombobox*Listbox.selectBackground", "#22c55e")
+root.option_add("*TCombobox*Listbox.selectForeground", "#04120a")
 
-header = tk.Frame(root, bg=COLORS["panel"])
+header = tk.Frame(root, bg="#0d1526")
 header.pack(fill="x")
 
-header_inner = tk.Frame(header, bg=COLORS["panel"], padx=20, pady=12)
+header_inner = tk.Frame(header, bg="#0d1526", padx=20, pady=12)
 header_inner.pack(fill="x")
 
-make_logo(header_inner, 28, COLORS["accent"], COLORS["panel"]).pack(
+make_logo(header_inner, 28, "#22c55e", "#0d1526").pack(
     side="left", padx=(0, 10)
 )
 
-brand = tk.Frame(header_inner, bg=COLORS["panel"])
+brand = tk.Frame(header_inner, bg="#0d1526")
 brand.pack(side="left")
 tk.Label(
-    brand, text="SMERKIL", bg=COLORS["panel"], fg=COLORS["text"],
+    brand, text="SMERKIL", bg="#0d1526", fg="#f1f5f9",
     font=("Consolas", 13, "bold"),
 ).pack(side="left")
 tk.Label(
-    brand, text=" TECHNOLOGIES", bg=COLORS["panel"], fg=COLORS["muted"],
+    brand, text=" TECHNOLOGIES", bg="#0d1526", fg="#94a3b8",
     font=("Consolas", 11),
 ).pack(side="left")
 
 tk.Label(
-    header_inner, text="AI Provider Platform", bg=COLORS["panel"],
-    fg=COLORS["muted"], font=("Segoe UI", 10),
+    header_inner, text="AI Provider Platform", bg="#0d1526",
+    fg="#94a3b8", font=("Segoe UI", 10),
 ).pack(side="right")
 
-gradient = tk.Canvas(root, height=2, bg=COLORS["panel"], highlightthickness=0)
+gradient = tk.Canvas(root, height=2, bg="#0d1526", highlightthickness=0)
 gradient.pack(fill="x")
 gradient.bind("<Configure>", lambda event: paint_gradient(gradient, event.width, 2))
 
-footer = tk.Frame(root, bg=COLORS["panel"])
+footer = tk.Frame(root, bg="#0d1526")
 footer.pack(side="bottom", fill="x")
 
 tk.Label(
-    footer, text="SMERKIL Technologies", bg=COLORS["panel"],
-    fg=COLORS["muted"], font=("Consolas", 9),
+    footer, text="SMERKIL Technologies", bg="#0d1526",
+    fg="#94a3b8", font=("Consolas", 9),
 ).pack(side="right", padx=20, pady=9)
 
-body = tk.Frame(root, bg=COLORS["bg"])
+body = tk.Frame(root, bg="#0a101f")
 body.pack(fill="both", expand=True)
 
-sidebar = tk.Frame(body, bg=COLORS["panel"], width=230)
+sidebar = tk.Frame(body, bg="#0d1526", width=230)
 sidebar.pack(side="left", fill="y")
 sidebar.pack_propagate(False)
 
@@ -382,9 +357,9 @@ for name in TABLES:
 nav.selection_set("Users")
 nav.bind("<<TreeviewSelect>>", load_table)
 
-tk.Frame(body, bg=COLORS["border"], width=1).pack(side="left", fill="y")
+tk.Frame(body, bg="#1e293b", width=1).pack(side="left", fill="y")
 
-main = tk.Frame(body, bg=COLORS["bg"], padx=22, pady=18)
+main = tk.Frame(body, bg="#0a101f", padx=22, pady=18)
 main.pack(side="left", fill="both", expand=True)
 
 page = ttk.Frame(main)
@@ -413,7 +388,7 @@ ttk.Button(
     actions, text="Delete", style="Danger.TButton", command=delete_record
 ).pack(side="left")
 
-stats = tk.Frame(main, bg=COLORS["bg"])
+stats = tk.Frame(main, bg="#0a101f")
 stats.pack(fill="x", pady=(0, 16))
 
 records_var = tk.StringVar(value="0")
@@ -443,7 +418,7 @@ ttk.Button(searchbar, text="Search", style="Accent.TButton", command=search).pac
     side="left"
 )
 
-card = tk.Frame(main, bg=COLORS["border"], padx=1, pady=1)
+card = tk.Frame(main, bg="#1e293b", padx=1, pady=1)
 card.pack(fill="both", expand=True)
 
 tree = ttk.Treeview(card, show="headings", selectmode="browse")
@@ -451,8 +426,6 @@ scrollbar = ttk.Scrollbar(card, orient="vertical", command=tree.yview)
 tree.configure(yscrollcommand=scrollbar.set)
 tree.pack(side="left", fill="both", expand=True)
 scrollbar.pack(side="right", fill="y")
-tree.tag_configure("even", background=COLORS["card"])
-tree.tag_configure("odd", background=COLORS["row_alt"])
 tree.bind("<Double-1>", on_double_click)
 
 root.bind("<F5>", load_table)
